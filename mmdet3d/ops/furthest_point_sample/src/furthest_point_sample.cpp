@@ -3,7 +3,6 @@
 
 #include <ATen/cuda/CUDAContext.h>
 #include <ATen/cuda/CUDAEvent.h>
-// #include <THC/THC.h>
 #include <torch/extension.h>
 #include <torch/serialize/tensor.h>
 
