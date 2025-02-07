@@ -28,65 +28,21 @@ The required versions of MMCV and MMDetection for different versions of MMDetect
 **a. Create a conda virtual environment and activate it.**
 
 ```shell
-conda create -n open-mmlab python=3.7 -y
-conda activate open-mmlab
+conda create -n bevfusion python=3.8 -y
+conda activate bevfusion
 ```
 
 **b. Install PyTorch and torchvision following the [official instructions](https://pytorch.org/).**
 
 ```shell
 conda install pytorch torchvision -c pytorch
+or
+pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 torchaudio==0.9.1 -f https://download.pytorch.org/whl/torch_stable.html
 ```
-
-Note: Make sure that your compilation CUDA version and runtime CUDA version match.
-You can check the supported CUDA version for precompiled packages on the [PyTorch website](https://pytorch.org/).
-
-`E.g. 1` If you have CUDA 10.1 installed under `/usr/local/cuda` and would like to install
-PyTorch 1.5, you need to install the prebuilt PyTorch with CUDA 10.1.
-
-```python
-conda install pytorch==1.5.0 cudatoolkit=10.1 torchvision==0.6.0 -c pytorch
-```
-
-`E.g. 2` If you have CUDA 9.2 installed under `/usr/local/cuda` and would like to install
-PyTorch 1.3.1., you need to install the prebuilt PyTorch with CUDA 9.2.
-
-```python
-conda install pytorch=1.3.1 cudatoolkit=9.2 torchvision=0.4.2 -c pytorch
-```
-
-If you build PyTorch from source instead of installing the prebuilt pacakge,
-you can use more CUDA versions such as 9.0.
-
-**c. Install [MMCV](https://mmcv.readthedocs.io/en/latest/).**
-*mmcv-full* is necessary since MMDetection3D relies on MMDetection, CUDA ops in *mmcv-full* are required.
-
-`e.g.` The pre-build *mmcv-full* could be installed by running: (available versions could be found [here](https://mmcv.readthedocs.io/en/latest/#install-with-pip))
 
  ```shell
-pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/{cu_version}/{torch_version}/index.html
-```
-
-Please replace `{cu_version}` and `{torch_version}` in the url to your desired one. For example, to install the latest `mmcv-full` with `CUDA 11` and `PyTorch 1.7.0`, use the following command:
-
-```shell
-pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu110/torch1.7.0/index.html
-```
-
-See [here](https://github.com/open-mmlab/mmcv#install-with-pip) for different versions of MMCV compatible to different PyTorch and CUDA versions.
-Optionally, you could also build the full version from source:
-
-```shell
-git clone https://github.com/open-mmlab/mmcv.git
-cd mmcv
-MMCV_WITH_OPS=1 pip install -e .  # package mmcv-full will be installed after this step
-cd ..
-```
-
-Or directly run
-
-```shell
-pip install mmcv-full
+pip install mmcv-full==1.4.0
+#  pip install mmcv-full==1.4.0 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.9.0/index.html
 ```
 
 **d. Install [MMDetection](https://github.com/open-mmlab/mmdetection).**
@@ -98,23 +54,28 @@ pip install git+https://github.com/open-mmlab/mmdetection.git
 Optionally, you could also build MMDetection from source in case you want to modify the code:
 
 ```shell
-git clone https://github.com/open-mmlab/mmdetection.git
-cd mmdetection
+pip install mmsegmentation==0.14.1
+cd mmdetection-2.11.0
 pip install -r requirements/build.txt
 pip install -v -e .  # or "python setup.py develop"
 ```
 
-**e. Clone the MMDetection3D repository.**
+**d-1. Install requirements.**
+```shell
+pip install -r requirements/runtime.txt
+```
 
+**e. Clone the MMDetection3D repository.**
 ```shell
 git clone https://github.com/open-mmlab/mmdetection3d.git
 cd mmdetection3d
+git checkout v0.17.1 # Other versions may not be compatible.
+python setup.py install
 ```
 
-**f.Install build requirements and then install MMDetection3D.**
-
+**f. Install timm.**
 ```shell
-pip install -v -e .  # or "python setup.py develop"
+pip install timm
 ```
 
 Note:
@@ -130,14 +91,14 @@ It is recommended that you run step d each time you pull some updates from githu
     find . -name "*.so" | xargs rm
     ```
 
-2. Following the above instructions, mmdetection is installed on `dev` mode, any local modifications made to the code will take effect without the need to reinstall it (unless you submit some commits and want to update the version number).
+1. Following the above instructions, mmdetection is installed on `dev` mode, any local modifications made to the code will take effect without the need to reinstall it (unless you submit some commits and want to update the version number).
 
-3. If you would like to use `opencv-python-headless` instead of `opencv-python`,
+2. If you would like to use `opencv-python-headless` instead of `opencv-python`,
 you can install it before installing MMCV.
 
-4. Some dependencies are optional. Simply running `pip install -v -e .` will only install the minimum runtime requirements. To use optional dependencies like `albumentations` and `imagecorruptions` either install them manually with `pip install -r requirements/optional.txt` or specify desired extras when calling `pip` (e.g. `pip install -v -e .[optional]`). Valid keys for the extras field are: `all`, `tests`, `build`, and `optional`.
+1. Some dependencies are optional. Simply running `pip install -v -e .` will only install the minimum runtime requirements. To use optional dependencies like `albumentations` and `imagecorruptions` either install them manually with `pip install -r requirements/optional.txt` or specify desired extras when calling `pip` (e.g. `pip install -v -e .[optional]`). Valid keys for the extras field are: `all`, `tests`, `build`, and `optional`.
 
-5. The code can not be built for CPU only environment (where CUDA isn't available) for now.
+2. The code can not be built for CPU only environment (where CUDA isn't available) for now.
 
 ## Another option: Docker Image
 
